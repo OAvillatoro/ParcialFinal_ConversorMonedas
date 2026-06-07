@@ -6,13 +6,19 @@ class CurrencyRepository {
 
     private val api = RetrofitInstance.api
 
-    // Convierte una cantidad en USD hacia la moneda seleccionada
+    // Convierte una cantidad en USD hacia la moneda seleccionada.
     suspend fun convertFromUsd(
         amount: Double,
         targetCurrency: String
     ): Result<Double> {
         return try {
-            val response = api.getExchangeRates()
+            val response = api.getExchangeRates(baseCurrency = "USD")
+
+            if (response.result != "success") {
+                return Result.failure(
+                    Exception("La API no respondió correctamente.")
+                )
+            }
 
             val rate = response.rates[targetCurrency]
 
@@ -21,13 +27,13 @@ class CurrencyRepository {
                 Result.success(result)
             } else {
                 Result.failure(
-                    Exception("No se encontró el tipo de cambio para $targetCurrency")
+                    Exception("No se encontró el tipo de cambio para $targetCurrency.")
                 )
             }
 
         } catch (e: Exception) {
             Result.failure(
-                Exception("No hay conexión o la API no respondió correctamente")
+                Exception("No hay conexión o la API no respondió correctamente.")
             )
         }
     }

@@ -2,14 +2,14 @@ package com.oavillatoro.parcialfinalconversormonedas.data.remote
 
 import com.oavillatoro.parcialfinalconversormonedas.data.model.ExchangeRatesResponse
 import retrofit2.http.GET
-import retrofit2.http.Query
+import retrofit2.http.Path
 
 interface ApiService {
 
-    // Endpoint para obtener tasas de cambio desde USD hacia monedas específicas
-    @GET("v2/rates")
+    // Endpoint para obtener tasas de cambio desde una moneda base.
+    // En este proyecto usamos USD como moneda base.
+    @GET("v6/latest/{baseCurrency}")
     suspend fun getExchangeRates(
-        @Query("base") base: String = "USD",
-        @Query("quotes") quotes: String = "GTQ,HNL,NIO,MXN"
+        @Path("baseCurrency") baseCurrency: String = "USD"
     ): ExchangeRatesResponse
 }
